@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Image Display</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    {% for image in images_data %}
+        <div class="image-container">
+            <img src="{{ url_for('static', filename=image.image_path) }}" alt="Image" width="400">
+            <div>Probabilities from Rekognition verified by Clip</div>
+            <canvas id="chart{{ loop.index }}" width="400" height="400" class="chart-canvas"></canvas>
+            <script>
+            console.log(Chart.version);
+            var ctx = document.getElementById('chart{{ loop.index }}').getContext('2d');
+            var myChart = new Chart(ctx, {
+                type: 'bar', // For Chart.js 2.x, use 'horizontalBar' here instead
+                data: {
+                    labels: {{ image.labels | tojson }},
+                    datasets: [{
+                        label: 'Keyword Scores',
+                        data: {{ image.data | tojson }},
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: "#000", // Example to set text color, ensure visibility
+                                font: {
+                                    size: 20, // Adjust the font size as needed
+                                },
+                            }
+                        },
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: "#000", // Same here for x-axis
+                                font: {
+                                    size: 20, // And adjust the size here as well
+                                },
+                            }
+                        }
+                    }
+                }
+            });
+            </script>
+            <form action="/results" method="post">
+            <div>Classification Probabilities:</div>
+            <ul>
+                {% for keyword, prob in image.keywords.items() %}
+                    <li>
+                        <label>
+                            <input type="checkbox" name="keywords" value="{{ keyword }}">
+                            {{ keyword }}: {{ (prob * 100) | round(2) }}%
+                        </label>
+                    </li>
+                {% endfor %}
+            </ul>
+            <div>Dominant Colors:</div>
+            <div class="color-box">
+                {% for color in image.colors %}
+                    <label class="color-box" style="background-color: {{ color }}">
+                        <input type="radio" name="color" value="{{ color }}" style="visibility:visible;">
+                        {{ color }}
+                    </label>
+                {% endfor %}
+            </div>
+            <div>Source</div>
+            <div>
+                <label>
+                    <input type="radio" name="source" value="asos" style="visibility:visible;" selected>ASOS
+                </label>
+                <label>
+                    <input type="radio" name="source" value="unsplash" style="visibility:visible;">UNSPLASH
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="radio" name="type" value="mask" style="visibility:visible;">Mask
+                </label>
+                <label>
+                    <input type="radio" name="type" value="grid" style="visibility:visible;" selected>Grid
+                </label>
+            </div>
+            <p><button type="submit">Submit Selections</button></p>
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Collage</title>
+</head>
+<body>
+    <canvas id="collageCanvas" width="500" height="700"></canvas>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const canvas = document.getElementById('collageCanvas');
+            const ctx = canvas.getContext('2d');
+            const tshirtMask = new Image();
+            
+            tshirtMask.onload = () => {
+                // Ensure the mask is drawn first
+                ctx.drawImage(tshirtMask, 0, 0, canvas.width, canvas.height);
+                
+                // Change the composite operation after drawing the mask
+                ctx.globalCompositeOperation = 'source-atop'; // Ensures photos are drawn onto the mask
+                
+                loadAndDrawPhotos(); // Now load and draw photos
+            };
+            tshirtMask.src = "{{ url_for('static', filename='images/T-Shirt-Mask.png') }}"; // Update with the actual path to your T-shirt mask image
+
+            // Define your photo URLs here
+            const photoPaths = {{ image_urls | safe }};
+
+            function loadAndDrawPhotos() {
+                const photoSize = { width: 50, height: 50 }; // Set uniform photo size
+                let currentX = 0;
+                let currentY = 0;
+                const maxX = canvas.width - photoSize.width; // Maximum X position to fit within canvas
+                const maxY = canvas.height - photoSize.height; // Maximum Y position to fit within canvas
+
+                photoPaths.forEach((photoPath, index) => {
+                    const photo = new Image();
+                    photo.onload = () => {
+                        ctx.drawImage(photo, currentX, currentY, photoSize.width, photoSize.height);
+                        
+                        // Update position for next photo
+                        currentX += photoSize.width;
+                        if (currentX > maxX) {
+                            currentX = 0; // Reset to start of next row
+                            currentY += photoSize.height; // Move down a row
+                        }
+
+                        // Optional: Stop drawing if there's no more space
+                        if (currentY > maxY) {
+                            console.log('No more space to draw photos');
+                            return;
+                        }
+                    };
+                    photo.crossOrigin = "anonymous"; // Use if needed for CORS
+                    photo.src = photoPath;
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>

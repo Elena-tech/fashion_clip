@@ -1,0 +1,30 @@
+.image-container {
+    margin-bottom: 20px;
+}
+.color-box {
+    display: inline-block;
+    width: 100px;
+    height: 20px;
+}
+.chart-canvas {
+    width: 600px !important;
+    height: 400px !important;
+    /* Adding !important to ensure the style overrides any other conflicting CSS */
+}
+
+.chart-container {
+    width: 620px;
+    height: 420px;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); /* Adjust size as needed */
+    gap: 10px; /* Adjust the gap between images */
+    padding: 10px; /* Add some padding around the grid */
+}
+
+.grid-image-container img {
+    width: 100%; /* Make images fill their containers */
+    height: auto; /* Maintain aspect ratio */
+}

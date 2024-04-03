@@ -1,0 +1,3 @@
+DISPLAY_CHART_GUI = False
+DISPLAY_RESULTS_GUI = False
+URL = "http://127.0.0.1:5000/"

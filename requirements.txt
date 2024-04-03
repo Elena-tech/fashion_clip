@@ -1,0 +1,17 @@
+transformers
+torch 
+torchvision 
+torchaudio
+pillow
+beautifulsoup4
+opencv-python 
+scikit-image 
+seaborn
+plotly
+dash
+python-dotenv
+umap-learn==0.5.3
+boto3
+webcolors
+flask
+colormath

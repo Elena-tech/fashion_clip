@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Results Page</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="grid-container">
+        {% if selected_source == 'asos' %}
+            {% for prd in image_urls %}
+            <div class="grid-image-container">
+                <a href="{{ prd.site_url }}" target="_blank"><img src="{{ prd.image_url }}" alt="Product Image"></a>
+            </div>    
+            {% endfor %}            
+        {% else %}
+            {% for url in image_urls %}
+            <div class="grid-image-container">
+                <img src="{{ url }}" alt="Image">
+            </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+</body>
+</html>
